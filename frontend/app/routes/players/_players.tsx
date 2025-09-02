@@ -1,19 +1,21 @@
-import type { LoaderFunctionArgs } from 'react-router';
-import { Outlet, useLoaderData } from 'react-router';
-import { getPlayers } from '../../services/players';
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const search = url.searchParams.get('search') || '';
-  const position = url.searchParams.get('position') || '';
-  const team = url.searchParams.get('team') || '';
-
-  const players = await getPlayers({ search, position, team });
-  return { players, filters: { search, position, team } };
-}
+import { Outlet, useSearchParams } from 'react-router';
 
 export default function PlayersLayout() {
-  const { players, filters } = useLoaderData<typeof loader>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentSearch = searchParams.get('search') || '';
+  const currentPosition = searchParams.get('position') || '';
+  const currentTeam = searchParams.get('team') || '';
+
+  const handleFilterChange = (key: string, value: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (value) {
+      newSearchParams.set(key, value);
+    } else {
+      newSearchParams.delete(key);
+    }
+    setSearchParams(newSearchParams);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -28,14 +30,16 @@ export default function PlayersLayout() {
               <input
                 type="text"
                 placeholder="Search by name..."
-                defaultValue={filters.search}
+                value={currentSearch}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Position</label>
               <select
-                defaultValue={filters.position}
+                value={currentPosition}
+                onChange={(e) => handleFilterChange('position', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Positions</option>
@@ -48,7 +52,8 @@ export default function PlayersLayout() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Team</label>
               <select
-                defaultValue={filters.team}
+                value={currentTeam}
+                onChange={(e) => handleFilterChange('team', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Teams</option>
