@@ -1,7 +1,6 @@
 # Fantasy Cards
 
 A Premier League Fantasy football card game application.
-SalAM.
 
 ## Project Structure
 
