@@ -1,0 +1,29 @@
+# Backend specific gitignore
+
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Build output
+dist/
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads (if storing files locally)
+uploads/
+temp/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Coverage
+coverage/
