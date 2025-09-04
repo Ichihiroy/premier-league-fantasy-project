@@ -25,7 +25,7 @@ export interface RegisterData {
 
 // Login user
 export async function login(email: string, password: string): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>('/auth/login', {
+  const response = await apiClient.post<AuthResponse>('http://localhost:4000/api/auth/login', {
     email,
     password,
   });

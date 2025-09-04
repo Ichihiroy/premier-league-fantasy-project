@@ -13,7 +13,7 @@ export function getEnvVar(key: string, defaultValue?: string): string {
 }
 
 // Get API base URL
-export const API_BASE_URL = getEnvVar('VITE_API_BASE_URL', 'http://localhost:3000/api');
+export const API_BASE_URL = getEnvVar('VITE_API_BASE_URL', 'http://localhost:4000/api');
 
 // Get S3 base URL
 export const S3_BASE_URL = getEnvVar('VITE_S3_BASE_URL', '');
