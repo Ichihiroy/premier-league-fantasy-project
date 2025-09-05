@@ -25,13 +25,19 @@ export async function authenticate(
   next: NextFunction
 ): Promise<void> {
   try {
-    const authHeader = req.headers.authorization;
+    // Try to get token from cookie first, then fall back to Authorization header
+    let token = req.cookies?.authToken;
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      throw new UnauthorizedError("No valid authorization header provided");
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader?.startsWith("Bearer ")) {
+        token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      }
     }
 
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    if (!token) {
+      throw new UnauthorizedError("No authentication token provided");
+    }
 
     const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
 
@@ -66,13 +72,20 @@ export async function optionalAuth(
   next: NextFunction
 ): Promise<void> {
   try {
-    const authHeader = req.headers.authorization;
+    // Try to get token from cookie first, then fall back to Authorization header
+    let token = req.cookies?.authToken;
 
-    if (!authHeader?.startsWith("Bearer ")) {
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader?.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+    }
+
+    if (!token) {
       return next();
     }
 
-    const token = authHeader.substring(7);
     const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
 
     const user = await prisma.user.findUnique({

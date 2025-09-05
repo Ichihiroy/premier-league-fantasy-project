@@ -21,9 +21,28 @@ export class AuthController {
 
       logger.info("User registered successfully", { email: data.email });
 
+      // Debug: Log the token being set
+      console.log(
+        "🍪 Setting cookie with token:",
+        result.token.substring(0, 20) + "..."
+      );
+
+      // Set HTTP-only cookie with the token
+      res.cookie("authToken", result.token, {
+        httpOnly: true,
+        secure: false, // Set to false for localhost development
+        sameSite: "lax", // Changed from strict to lax for localhost
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      });
+
+      console.log("🍪 Cookie set successfully");
+
       res.status(201).json({
         message: "User registered successfully",
-        data: result,
+        data: {
+          user: result.user,
+          token: result.token, // Still include in response for frontend compatibility
+        },
       });
     } catch (error) {
       next(error);
@@ -37,9 +56,28 @@ export class AuthController {
 
       logger.info("User logged in successfully", { email: data.email });
 
+      // Debug: Log the token being set
+      console.log(
+        "🍪 Setting cookie with token:",
+        result.token.substring(0, 20) + "..."
+      );
+
+      // Set HTTP-only cookie with the token
+      res.cookie("authToken", result.token, {
+        httpOnly: true,
+        secure: false, // Set to false for localhost development
+        sameSite: "lax", // Changed from strict to lax for localhost
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      });
+
+      console.log("🍪 Cookie set successfully");
+
       res.status(200).json({
         message: "Login successful",
-        data: result,
+        data: {
+          user: result.user,
+          token: result.token, // Still include in response for frontend compatibility
+        },
       });
     } catch (error) {
       next(error);
@@ -142,8 +180,12 @@ export class AuthController {
     next: NextFunction
   ): Promise<void> {
     try {
-      // In a JWT-based system, logout is typically handled client-side
-      // by removing the token from storage. However, we can log the event.
+      // Clear the authentication cookie
+      res.clearCookie("authToken", {
+        httpOnly: true,
+        secure: false, // Set to false for localhost development
+        sameSite: "lax", // Changed from strict to lax for localhost
+      });
 
       if (req.user) {
         logger.info("User logged out", { userId: req.user.id });

@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import { env } from "./config/env";
 import { errorHandler, notFoundHandler } from "./middlewares/error";
 import { generalRateLimit } from "./middlewares/rateLimit";
@@ -43,6 +44,9 @@ app.use(generalRateLimit);
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Cookie parsing middleware
+app.use(cookieParser());
 
 // Health check endpoint
 app.get("/health", (_req, res) => {
