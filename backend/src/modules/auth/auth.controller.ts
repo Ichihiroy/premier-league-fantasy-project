@@ -32,6 +32,7 @@ export class AuthController {
         httpOnly: true,
         secure: false, // Set to false for localhost development
         sameSite: "lax", // Changed from strict to lax for localhost
+        path: "/", // Ensure cookie is sent on all routes
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       });
 
@@ -63,14 +64,29 @@ export class AuthController {
       );
 
       // Set HTTP-only cookie with the token
+      console.log("🍪 Setting cookie with options:", {
+        httpOnly: false, // Temporarily disabled for debugging
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       res.cookie("authToken", result.token, {
-        httpOnly: true,
+        httpOnly: false, // Temporarily set to false for debugging
         secure: false, // Set to false for localhost development
         sameSite: "lax", // Changed from strict to lax for localhost
+        path: "/", // Ensure cookie is sent on all routes
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       });
 
-      console.log("🍪 Cookie set successfully");
+      console.log("🍪 Cookie set successfully (httpOnly: false for debugging)");
+      
+      // Log response headers to verify cookie is being sent
+      const headers = res.getHeaders();
+      console.log("📤 Response headers before sending:");
+      console.log(JSON.stringify(headers, null, 2));
+      console.log("📤 Set-Cookie header specifically:", headers['set-cookie']);
 
       res.status(200).json({
         message: "Login successful",
@@ -79,6 +95,8 @@ export class AuthController {
           token: result.token, // Still include in response for frontend compatibility
         },
       });
+      
+      console.log("📨 Response sent to client");
     } catch (error) {
       next(error);
     }
@@ -169,6 +187,37 @@ export class AuthController {
       res.status(200).json({
         message: "Account deleted successfully",
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Test endpoint to verify cookie setting works
+  async testCookie(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      console.log("🧪 Testing cookie functionality");
+      console.log("🔍 Request Origin:", req.get('Origin'));
+      console.log("🔍 Request headers:", req.headers);
+      
+      res.cookie("test-cookie", "test-value", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60000, // 1 minute
+      });
+      
+      console.log("🍪 Test cookie set");
+      const headers = res.getHeaders();
+      console.log("📤 Response headers:");
+      console.log(JSON.stringify(headers, null, 2));
+      console.log("📤 Set-Cookie header specifically:", headers['set-cookie']);
+      
+      res.json({ message: "Test cookie set", timestamp: new Date().toISOString() });
     } catch (error) {
       next(error);
     }

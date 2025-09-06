@@ -1,5 +1,6 @@
 import type { MetaFunction } from 'react-router';
 import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,6 +10,17 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const [cookieInfo, setCookieInfo] = useState<string>('');
+
+  useEffect(() => {
+    // Check if cookie exists after component mounts
+    if (typeof document !== 'undefined') {
+      const cookies = document.cookie;
+      setCookieInfo(cookies || 'No cookies found');
+      console.log('🍪 Current cookies on home page:', cookies);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-16">
@@ -17,6 +29,13 @@ export default function Index() {
           <p className="text-xl text-gray-600 mb-8">
             Collect, trade, and showcase Premier League player cards
           </p>
+          
+          {/* Debug info */}
+          <div className="mb-4 p-4 bg-yellow-100 rounded-lg">
+            <p className="text-sm text-gray-700">
+              <strong>Debug - Cookies:</strong> {cookieInfo}
+            </p>
+          </div>
           <div className="flex justify-center space-x-4">
             <Link
               to="/players"

@@ -31,8 +31,16 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    await login(email, password);
-    return redirect('/');
+    console.log('🔐 Attempting login...');
+    const response = await login(email, password);
+    console.log('✅ Login successful:', response);
+    
+    // Check if cookie was set (only on client side)
+    if (typeof document !== 'undefined') {
+      console.log('🍪 Document cookies after login:', document.cookie);
+    }
+    
+    // return redirect('/');
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : 'Invalid email or password',

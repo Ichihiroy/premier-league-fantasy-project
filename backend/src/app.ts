@@ -19,14 +19,32 @@ app.set("trust proxy", 1);
 app.use(helmet());
 
 // CORS configuration
-app.use(
-  cors({
-    origin: env.CORS_ORIGIN,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+
+const ALLOW_ORIGINS = (env.CORS_ORIGIN ?? "")
+  .split(/[,\s]+/)
+  .filter(Boolean); 
+
+console.log("🌍 CORS Allowed Origins:", ALLOW_ORIGINS);
+
+app.use(cors({
+  origin(origin, cb) {
+    console.log("🔍 CORS Request Origin:", origin);
+    // allow server-to-server & same-origin (no Origin header)
+    if (!origin) {
+      console.log("✅ CORS: No origin (same-origin or server-to-server), allowing");
+      return cb(null, true);
+    }
+    if (ALLOW_ORIGINS.includes(origin)) {
+      console.log("✅ CORS: Origin allowed");
+      return cb(null, true);
+    }
+    console.log("❌ CORS: Origin rejected");
+    cb(new Error(`Not allowed by CORS: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 // Compression middleware
 app.use(compression());

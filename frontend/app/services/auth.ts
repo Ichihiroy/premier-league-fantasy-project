@@ -28,13 +28,7 @@ export interface RegisterData {
 }
 
 // ✅ Cookie helper functions (works on both server and client)
-function setCookie(name: string, value: string, days: number = 7): void {
-  if (typeof document !== 'undefined') {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;secure;samesite=strict`;
-  }
-}
+
 
 function getCookie(name: string): string | null {
   if (typeof document !== 'undefined') {
@@ -49,24 +43,13 @@ function getCookie(name: string): string | null {
   return null;
 }
 
-function deleteCookie(name: string): void {
-  if (typeof document !== 'undefined') {
-    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/`;
-  }
-}
 
-// ✅ Auth token operations using cookies
-function setAuthToken(token: string): void {
-  setCookie('authToken', token, 7); // 7 days expiry
-}
 
 function getAuthTokenFromStorage(): string | null {
   return getCookie('authToken');
 }
 
-function removeAuthToken(): void {
-  deleteCookie('authToken');
-}
+
 
 // Login user
 export async function login(email: string, password: string): Promise<AuthResponse> {
@@ -75,8 +58,8 @@ export async function login(email: string, password: string): Promise<AuthRespon
     password,
   });
 
-  // Backend handles HTTP-only cookie setting automatically
-  // No need to store token client-side anymore
+
+  console.log("🍪 Login response token:", response.data.token );
   return response;
 }
 
@@ -92,8 +75,7 @@ export async function register(
     password,
   });
 
-  // Backend handles HTTP-only cookie setting automatically
-  // No need to store token client-side anymore
+
   return response;
 }
 
