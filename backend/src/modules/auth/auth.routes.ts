@@ -12,6 +12,7 @@ router.post("/login", authRateLimit, authController.login);
 // Protected routes (require authentication)
 router.use(authenticate); // All routes below require authentication
 
+// router.get("/me", authController.getMe);
 router.get("/profile", authController.getProfile);
 router.put("/profile", authController.updateProfile);
 router.put("/change-password", authController.changePassword);
