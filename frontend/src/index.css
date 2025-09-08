@@ -1,21 +1,20 @@
-@import "@tailwindcss"
+/* @import "@tailwindcss" */
 
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
 
-/* .glass-effect {
+.glass-effect {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* Loading animation */
-/* @keyframes spin {
+@keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
 .animate-spin {
   animation: spin 1s linear infinite;
-} */
+}
