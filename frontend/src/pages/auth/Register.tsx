@@ -54,7 +54,6 @@ export default function Register() {
     setLoading(true);
 
     try {
-      console.log('📝 Starting registration process...');
       await registerUser(data.email, data.password, data.name);
       
       toast.success('Registration successful! Welcome to Fantasy Cards!', {
@@ -66,7 +65,6 @@ export default function Register() {
       navigate('/dashboard');
       
     } catch (error) {
-      console.error('❌ Registration failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
       
       toast.error(errorMessage, {

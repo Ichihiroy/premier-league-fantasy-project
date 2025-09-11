@@ -34,7 +34,6 @@ export default function Login() {
     setLoading(true);
 
     try {
-      console.log('🔐 Starting login process...');
       await login(data.email, data.password);
       
       toast.success('Login successful! Welcome back!', {
@@ -46,7 +45,6 @@ export default function Login() {
       navigate('/dashboard');
       
     } catch (error) {
-      console.error('❌ Login failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
       
       toast.error(errorMessage, {

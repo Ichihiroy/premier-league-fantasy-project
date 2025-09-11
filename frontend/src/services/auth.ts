@@ -52,7 +52,6 @@ export async function login(email: string, password: string): Promise<AuthRespon
     password,
   });
 
-  console.log("🍪 Login response token:", response.data.token );
   return response;
 }
 
@@ -73,8 +72,8 @@ export async function register(
 
 // Get current user
 export async function getCurrentUser(): Promise<User> {
-  const response = await apiClient.get<{ message: string; data: { user: User } }>('/auth/me');
-  return response.data.user;
+  const response = await apiClient.get<{ message: string; data: { user: User } }>('/auth/profile');
+  return response.data
 }
 
 // Logout user

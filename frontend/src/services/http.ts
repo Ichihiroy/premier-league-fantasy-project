@@ -22,7 +22,6 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('❌ Request error:', error);
     return Promise.reject(error);
   }
 );
@@ -30,8 +29,7 @@ apiClient.interceptors.request.use(
 // Response interceptor for debugging and error handling
 apiClient.interceptors.response.use(
   (response) => {
-    console.log('✅ Response received:', response.status, response.statusText);
-    console.log('📦 Response data:', response.data);
+
     
     // Log cookie information
     if (response.headers['set-cookie']) {
@@ -44,12 +42,7 @@ apiClient.interceptors.response.use(
     console.error('❌ Response error:', error);
     
     if (error.response) {
-      // Server responded with error status
-      console.error('📛 Error response:', {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-      });
+    
       
       // Handle specific error cases
       if (error.response.status === 401) {
