@@ -3,9 +3,9 @@ import NavBar from './NavBar';
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-primary">
       <NavBar />
-      <main>
+      <main className="pt-20">
         <Outlet />
       </main>
     </div>

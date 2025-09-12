@@ -6,7 +6,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/Layout';
 
 // Pages
-import HomePage from './pages/HomePage';
+import HomePage from './pages/HomePageNew';
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -14,6 +14,7 @@ import PlayersPage from './pages/PlayersPage';
 import PlayerDetailPage from './pages/PlayerDetailPage';
 import NewPlayerPage from './pages/NewPlayerPage';
 import CollectionPage from './pages/CollectionPage';
+import FixturesPage from './pages/FixturesPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Protected Route Component
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "auth/register",
         element: <RegisterPage />
+      },
+      {
+        path: "fixtures",
+        element: <FixturesPage />
       },
       {
         path: "dashboard",

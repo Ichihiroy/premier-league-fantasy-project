@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import LiveTicker from '../components/ui/LiveTicker';
+import MatchCard from '../components/ui/MatchCard';
+import NewsCard from '../components/ui/NewsCard';
 
 // Mock user data - replace with actual API call
 interface UserStats {
@@ -9,7 +12,57 @@ interface UserStats {
   favoriteTeam: string;
   joinDate: string;
   lastLogin: string;
+  fantasyPoints: number;
+  currentRank: number;
+  totalManagers: number;
 }
+
+// Sample data for dashboard
+const upcomingMatches = [
+  {
+    id: '1',
+    homeTeam: { name: 'Arsenal', shortName: 'ARS' },
+    awayTeam: { name: 'Chelsea', shortName: 'CHE' },
+    status: 'scheduled' as const,
+    time: '15:00',
+    date: 'Tomorrow',
+    venue: 'Emirates Stadium',
+    competition: 'Premier League'
+  },
+  {
+    id: '2',
+    homeTeam: { name: 'Manchester City', shortName: 'MCI' },
+    awayTeam: { name: 'Liverpool', shortName: 'LIV' },
+    status: 'scheduled' as const,
+    time: '17:30',
+    date: 'Sunday',
+    venue: 'Etihad Stadium',
+    competition: 'Premier League'
+  }
+];
+
+const recentNews = [
+  {
+    id: '1',
+    title: 'New Premier League Season Transfer Updates',
+    excerpt: 'Latest transfers and player movements for the upcoming season.',
+    author: 'Sports Desk',
+    publishedAt: '2024-01-15T14:30:00Z',
+    category: 'Transfer',
+    readTime: 3,
+    tags: ['Transfers', 'Premier League']
+  },
+  {
+    id: '2',
+    title: 'Fantasy Football Tips for Gameweek 15',
+    excerpt: 'Expert picks and captain choices for the upcoming gameweek.',
+    author: 'Fantasy Expert',
+    publishedAt: '2024-01-15T10:15:00Z',
+    category: 'Fantasy',
+    readTime: 4,
+    tags: ['Fantasy', 'Tips']
+  }
+];
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -27,7 +80,10 @@ export default function DashboardPage() {
             year: 'numeric', 
             month: 'long' 
           }),
-          lastLogin: 'Today'
+          lastLogin: 'Today',
+          fantasyPoints: 1247,
+          currentRank: 125843,
+          totalManagers: 8500000
         };
 
         setStats(mockStats);
@@ -51,210 +107,163 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+          <div className="w-16 h-16 border-4 border-accent-magenta border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-white text-lg">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
+  const handleMatchClick = (match: any) => {
+    console.log('Match clicked:', match.id);
+  };
+
+  const handleNewsClick = (article: any) => {
+    console.log('News clicked:', article.id);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-6">
+      {/* Live Ticker */}
+      <LiveTicker />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {user?.name}!
+        <div className="mb-8 fade-up">
+          <h1 className="text-display text-white font-bold">
+            Welcome back, <span className="text-gradient">{user?.name}</span>
           </h1>
-          <p className="text-gray-600">
-            Here's what's happening with your fantasy cards
+          <p className="text-body-lg text-neutral-300 mt-2">
+            Here's your fantasy football overview and latest updates
           </p>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Total Cards
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      {stats?.totalCards || 0}
-                    </dd>
-                  </dl>
-                </div>
-              </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="card text-center fade-up">
+            <div className="text-3xl font-bold text-gradient mb-2">
+              {stats?.fantasyPoints.toLocaleString()}
             </div>
+            <div className="text-neutral-300 text-sm">Fantasy Points</div>
           </div>
-
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                  </svg>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Favorite Team
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      {stats?.favoriteTeam || 'Not set'}
-                    </dd>
-                  </dl>
-                </div>
-              </div>
+          
+          <div className="card text-center fade-up fade-up-delay-1">
+            <div className="text-3xl font-bold text-gradient mb-2">
+              #{stats?.currentRank.toLocaleString()}
             </div>
+            <div className="text-neutral-300 text-sm">Global Rank</div>
           </div>
-
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Member Since
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      {stats?.joinDate || 'Recently'}
-                    </dd>
-                  </dl>
-                </div>
-              </div>
+          
+          <div className="card text-center fade-up fade-up-delay-2">
+            <div className="text-3xl font-bold text-gradient mb-2">
+              {stats?.totalCards}
             </div>
+            <div className="text-neutral-300 text-sm">Player Cards</div>
           </div>
-
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Last Login
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      {stats?.lastLogin || 'Unknown'}
-                    </dd>
-                  </dl>
-                </div>
-              </div>
+          
+          <div className="card text-center fade-up fade-up-delay-3">
+            <div className="text-3xl font-bold text-gradient mb-2">
+              {stats?.favoriteTeam.split(' ')[0]}
             </div>
+            <div className="text-neutral-300 text-sm">Favorite Team</div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
+        <div className="card mb-12 fade-up">
+          <h2 className="text-h2 text-white font-bold mb-6">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link 
+              to="/players" 
+              className="btn-primary flex items-center justify-center space-x-2 p-4"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              </svg>
+              <span>Browse Players</span>
+            </Link>
+            
+            <Link 
+              to="/collection" 
+              className="btn-secondary flex items-center justify-center space-x-2 p-4"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <span>My Collection</span>
+            </Link>
+            
+            <Link 
+              to="/fixtures" 
+              className="btn-secondary flex items-center justify-center space-x-2 p-4"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>View Fixtures</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Upcoming Matches */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-h2 text-white font-bold fade-up">Upcoming Matches</h2>
+              <Link to="/fixtures" className="text-accent-teal hover:text-accent-lime transition-colors text-sm font-medium fade-up fade-up-delay-1">
+                View All
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {upcomingMatches.map((match, index) => (
+                <div key={match.id} className={`fade-up fade-up-delay-${index + 1}`}>
+                  <MatchCard match={match} onClick={handleMatchClick} />
                 </div>
-                <div className="ml-4 flex-1">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Browse Players
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Discover new players and add them to your collection
-                  </p>
-                  <Link 
-                    to="/players" 
-                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500"
-                  >
-                    View Players
-                    <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                  </div>
+          {/* Right Column - Recent News & Account */}
+          <div className="space-y-8">
+            {/* Account Summary */}
+            <div className="card fade-up">
+              <h3 className="text-lg font-semibold text-white mb-4">Account Summary</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-neutral-400">Member since</span>
+                  <span className="text-white">{stats?.joinDate}</span>
                 </div>
-                <div className="ml-4 flex-1">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Add New Player
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Create a new player card for your collection
-                  </p>
-                  <Link 
-                    to="/players/new" 
-                    className="inline-flex items-center text-sm font-medium text-green-600 hover:text-green-500"
-                  >
-                    Create Player
-                    <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
+                <div className="flex justify-between">
+                  <span className="text-neutral-400">Last login</span>
+                  <span className="text-white">{stats?.lastLogin}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-neutral-400">Total managers</span>
+                  <span className="text-white">{stats?.totalManagers.toLocaleString()}</span>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
+            {/* Recent News */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-h3 text-white font-bold fade-up">Latest News</h2>
+              </div>
+              
+              <div className="space-y-4">
+                {recentNews.map((article, index) => (
+                  <div key={article.id} className={`fade-up fade-up-delay-${index + 1}`}>
+                    <NewsCard 
+                      article={article}
+                      variant="compact"
+                      onClick={handleNewsClick}
+                    />
                   </div>
-                </div>
-                <div className="ml-4 flex-1">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    My Collection
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    View and manage your card collection
-                  </p>
-                  <Link 
-                    to="/collection" 
-                    className="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-500"
-                  >
-                    View Collection
-                    <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
+                ))}
               </div>
             </div>
           </div>

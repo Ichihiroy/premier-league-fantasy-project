@@ -107,56 +107,67 @@ export default function PlayersPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-accent-magenta border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-white text-lg">Loading players...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen pt-6 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8 fade-up">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Players</h1>
-            <p className="mt-2 text-gray-600">
-              Browse and manage Premier League players
+            <h1 className="text-display text-white font-bold">Player Database</h1>
+            <p className="text-body-lg text-neutral-300 mt-2">
+              Discover and analyze Premier League talent
             </p>
           </div>
           <Link
             to="/players/new"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="btn-primary flex items-center space-x-2"
           >
-            Add Player
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span>Add Player</span>
           </Link>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="card mb-8 fade-up fade-up-delay-1">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Search
+              <label className="block text-sm font-medium text-white mb-2">
+                Search Players
               </label>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search players..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder="Search by name..."
+                  className="input-field w-full pl-10"
+                />
+                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
 
             {/* Position Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-2">
                 Position
               </label>
               <select
                 value={positionFilter}
                 onChange={(e) => handleFilterChange('position', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input-field w-full"
               >
                 <option value="">All Positions</option>
                 {positions.map((position) => (
@@ -169,13 +180,13 @@ export default function PlayersPage() {
 
             {/* Team Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white mb-2">
                 Team
               </label>
               <select
                 value={teamFilter}
                 onChange={(e) => handleFilterChange('team', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input-field w-full"
               >
                 <option value="">All Teams</option>
                 {teams.map((team) => (
@@ -190,7 +201,7 @@ export default function PlayersPage() {
             <div className="flex items-end">
               <button
                 onClick={() => setSearchParams({})}
-                className="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="btn-secondary w-full"
               >
                 Clear Filters
               </button>
@@ -200,34 +211,54 @@ export default function PlayersPage() {
 
         {/* Players Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-          {players.map((player) => (
+          {players.map((player, index) => (
             <div
               key={player.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              className={`card card-hover cursor-pointer fade-up fade-up-delay-${(index % 4) + 1}`}
               onClick={() => navigate(`/players/${player.id}`)}
             >
-              {player.image_url && (
+              {player.image_url ? (
                 <img
                   src={player.image_url}
                   alt={player.name}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-48 object-cover rounded-t-xl"
                 />
+              ) : (
+                <div className="w-full h-48 bg-gradient-to-br from-neutral-700 to-neutral-800 rounded-t-xl flex items-center justify-center">
+                  <svg className="w-16 h-16 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
               )}
-              <div className="p-4">
-                <h3 className="font-bold text-lg text-gray-900 mb-1">
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-white mb-3">
                   {player.name}
                 </h3>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">{player.position}</span>
-                  <span className="text-sm font-medium text-blue-600">
-                    £{player.price}m
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">{player.team}</span>
-                  <span className="text-sm font-medium text-green-600">
-                    {player.points} pts
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-400">Position</span>
+                    <span className="text-sm font-medium text-accent-teal">
+                      {player.position}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-400">Team</span>
+                    <span className="text-sm text-white">
+                      {player.team}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-400">Price</span>
+                    <span className="text-sm font-medium text-accent-lime">
+                      £{player.price}m
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-400">Points</span>
+                    <span className="text-sm font-bold text-gradient">
+                      {player.points}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -236,14 +267,9 @@ export default function PlayersPage() {
 
         {/* Empty State */}
         {players.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <svg
-                className="w-16 h-16 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+          <div className="text-center py-16 fade-up">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-accent-magenta to-accent-teal flex items-center justify-center">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -252,63 +278,77 @@ export default function PlayersPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-h3 text-white font-bold mb-2">
               No players found
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-neutral-300 mb-6 max-w-md mx-auto">
               {searchTerm || positionFilter || teamFilter
-                ? 'Try adjusting your filters'
-                : 'Get started by adding your first player'}
+                ? 'Try adjusting your search criteria or filters to find more players'
+                : 'Build your database by adding your first player to get started'}
             </p>
             <Link
               to="/players/new"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="btn-primary inline-flex items-center space-x-2"
             >
-              Add Player
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              <span>Add First Player</span>
             </Link>
           </div>
         )}
 
         {/* Pagination */}
         {meta && meta.total_pages > 1 && (
-          <div className="flex justify-center items-center space-x-2">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-3 py-2 text-gray-500 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Previous
-            </button>
-            
-            {Array.from({ length: meta.total_pages }, (_, i) => i + 1).map((page) => (
+          <div className="card fade-up">
+            <div className="flex justify-center items-center space-x-2">
               <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`px-3 py-2 rounded-lg ${
-                  page === currentPage
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="btn-secondary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {page}
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Previous
               </button>
-            ))}
-            
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === meta.total_pages}
-              className="px-3 py-2 text-gray-500 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+              
+              <div className="flex space-x-1">
+                {Array.from({ length: Math.min(meta.total_pages, 5) }, (_, i) => {
+                  const page = i + 1;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        page === currentPage
+                          ? 'bg-gradient-to-r from-accent-magenta to-accent-teal text-white'
+                          : 'text-neutral-300 hover:text-white hover:bg-neutral-700'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === meta.total_pages}
+                className="btn-secondary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
 
-        {/* Results Info */}
-        {meta && (
-          <div className="text-center mt-4 text-sm text-gray-600">
-            Showing {((currentPage - 1) * meta.per_page) + 1} to{' '}
-            {Math.min(currentPage * meta.per_page, meta.total)} of {meta.total} players
+            {/* Results Info */}
+            <div className="text-center mt-4 text-sm text-neutral-400">
+              Showing {((currentPage - 1) * meta.per_page) + 1} to{' '}
+              {Math.min(currentPage * meta.per_page, meta.total)} of {meta.total} players
+            </div>
           </div>
         )}
       </div>
