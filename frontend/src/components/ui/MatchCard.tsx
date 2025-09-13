@@ -38,7 +38,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
       case 'live':
         return (
           <div className="flex items-center space-x-2">
-            <div className="status-live">
+            <div className="flex items-center bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-1"></div>
               LIVE
             </div>
@@ -48,11 +48,15 @@ const MatchCard: React.FC<MatchCardProps> = ({
           </div>
         );
       case 'ft':
-        return <div className="status-ft">FULL TIME</div>;
+        return (
+          <div className="bg-neutral-600 text-white px-2 py-1 rounded-full text-xs font-bold">
+            FT
+          </div>
+        );
       case 'scheduled':
         return (
-          <div className="text-center">
-            <div className="status-scheduled mb-1">{match.time}</div>
+          <div className="text-right">
+            <div className="text-white font-semibold text-sm">{match.time}</div>
             {match.date && (
               <div className="text-xs text-neutral-400">{match.date}</div>
             )}
@@ -67,32 +71,32 @@ const MatchCard: React.FC<MatchCardProps> = ({
     if (match.status === 'scheduled') {
       return (
         <div className="text-center">
-          <div className="text-2xl font-bold text-neutral-400">vs</div>
+          <div className="text-2xl font-bold text-neutral-400">VS</div>
         </div>
       );
     }
     
     return (
-      <div className="text-center">
-        <div className="text-3xl font-bold text-white mb-1">
+      <div className="text-center bg-gradient-to-br from-accent-magenta to-accent-teal rounded-xl px-4 py-2 border border-white/20">
+        <div className="text-2xl font-bold text-white">
           {match.homeScore ?? 0} - {match.awayScore ?? 0}
         </div>
       </div>
     );
   };
 
-  const TeamLogo: React.FC<{ team: Team; isHome: boolean }> = ({ team, isHome }) => (
-    <div className={`flex ${isHome ? 'flex-col' : 'flex-col-reverse'} items-center space-y-2 flex-1`}>
-      <div className="w-12 h-12 bg-gradient-accent rounded-full flex items-center justify-center text-white font-bold text-lg shadow-glow">
+  const TeamLogo: React.FC<{ team: Team }> = ({ team }) => (
+    <div className="flex flex-col items-center space-y-2 flex-1">
+      <div className="w-12 h-12 bg-gradient-to-br from-accent-magenta to-accent-teal rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white/20">
         {team.logo ? (
-          <img src={team.logo} alt={team.name} className="w-10 h-10 object-contain" />
+          <img src={team.logo} alt={team.name} className="w-8 h-8 object-contain" />
         ) : (
-          team.shortName.slice(0, 3).toUpperCase()
+          <span className="text-sm">{team.shortName.slice(0, 3).toUpperCase()}</span>
         )}
       </div>
       <div className="text-center">
         <div className="font-semibold text-white text-sm">{team.shortName}</div>
-        <div className="text-xs text-neutral-300 hidden sm:block">{team.name}</div>
+        <div className="text-xs text-neutral-300 hidden sm:block truncate max-w-20">{team.name}</div>
       </div>
     </div>
   );
@@ -105,7 +109,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
 
   return (
     <div 
-      className={`match-card cursor-pointer group ${sizeClasses[size]} ${className}`}
+      className={`card relative cursor-pointer group transition-all duration-300 hover:scale-105 hover:shadow-2xl ${sizeClasses[size]} ${className}`}
       onClick={() => onClick?.(match)}
       role="button"
       tabIndex={0}
@@ -115,24 +119,27 @@ const MatchCard: React.FC<MatchCardProps> = ({
         }
       }}
     >
-      {/* Competition Badge */}
-      {match.competition && (
-        <div className="absolute top-2 left-2">
-          <span className="text-caption text-accent-teal bg-accent-teal bg-opacity-20 px-2 py-1 rounded">
-            {match.competition}
-          </span>
+      {/* Header with Competition and Status */}
+      <div className="flex justify-between items-start mb-4">
+        {/* Competition Badge */}
+        <div>
+          {match.competition && (
+            <span className="text-xs text-accent-teal bg-accent-teal/20 px-2 py-1 rounded-full border border-accent-teal/30">
+              {match.competition}
+            </span>
+          )}
         </div>
-      )}
 
-      {/* Status */}
-      <div className="absolute top-2 right-2">
-        {getStatusDisplay()}
+        {/* Status */}
+        <div className="text-right">
+          {getStatusDisplay()}
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex items-center justify-between">
         {/* Home Team */}
-        <TeamLogo team={match.homeTeam} isHome={true} />
+        <TeamLogo team={match.homeTeam} />
 
         {/* Score/Time */}
         <div className="flex-shrink-0 mx-4">
@@ -140,12 +147,12 @@ const MatchCard: React.FC<MatchCardProps> = ({
         </div>
 
         {/* Away Team */}
-        <TeamLogo team={match.awayTeam} isHome={false} />
+        <TeamLogo team={match.awayTeam} />
       </div>
 
       {/* Venue */}
       {match.venue && (
-        <div className="mt-4 text-center">
+        <div className="mt-4 pt-3 border-t border-white/10">
           <div className="text-xs text-neutral-400 flex items-center justify-center space-x-1">
             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
@@ -154,9 +161,6 @@ const MatchCard: React.FC<MatchCardProps> = ({
           </div>
         </div>
       )}
-
-      {/* Hover Effect Indicator */}
-      <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent-teal rounded-xl transition-colors duration-300 pointer-events-none"></div>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Hero from '../components/ui/Hero';
@@ -6,152 +5,32 @@ import LiveTicker from '../components/ui/LiveTicker';
 import MatchCard from '../components/ui/MatchCard';
 import StandingsTable from '../components/ui/StandingsTable';
 import NewsCard from '../components/ui/NewsCard';
-
-// Sample data
-const upcomingMatches = [
-  {
-    id: '1',
-    homeTeam: { name: 'Arsenal', shortName: 'ARS' },
-    awayTeam: { name: 'Chelsea', shortName: 'CHE' },
-    homeScore: 2,
-    awayScore: 1,
-    status: 'live' as const,
-    minute: 67,
-    venue: 'Emirates Stadium',
-    competition: 'Premier League'
-  },
-  {
-    id: '2',
-    homeTeam: { name: 'Manchester City', shortName: 'MCI' },
-    awayTeam: { name: 'Liverpool', shortName: 'LIV' },
-    status: 'scheduled' as const,
-    time: '16:30',
-    date: 'Tomorrow',
-    venue: 'Etihad Stadium',
-    competition: 'Premier League'
-  },
-  {
-    id: '3',
-    homeTeam: { name: 'Newcastle United', shortName: 'NEW' },
-    awayTeam: { name: 'Tottenham', shortName: 'TOT' },
-    homeScore: 1,
-    awayScore: 2,
-    status: 'ft' as const,
-    venue: 'St. James\' Park',
-    competition: 'Premier League'
-  }
-];
-
-const standings = [
-  {
-    position: 1,
-    team: { name: 'Arsenal', shortName: 'Arsenal' },
-    played: 15,
-    won: 12,
-    drawn: 2,
-    lost: 1,
-    goalsFor: 35,
-    goalsAgainst: 12,
-    goalDifference: 23,
-    points: 38,
-    form: ['W', 'W', 'D', 'W', 'W'] as ('W' | 'D' | 'L')[],
-    lastPosition: 2
-  },
-  {
-    position: 2,
-    team: { name: 'Manchester City', shortName: 'Man City' },
-    played: 15,
-    won: 11,
-    drawn: 3,
-    lost: 1,
-    goalsFor: 40,
-    goalsAgainst: 15,
-    goalDifference: 25,
-    points: 36,
-    form: ['W', 'D', 'W', 'W', 'D'] as ('W' | 'D' | 'L')[],
-    lastPosition: 1
-  },
-  {
-    position: 3,
-    team: { name: 'Liverpool', shortName: 'Liverpool' },
-    played: 15,
-    won: 10,
-    drawn: 4,
-    lost: 1,
-    goalsFor: 32,
-    goalsAgainst: 16,
-    goalDifference: 16,
-    points: 34,
-    form: ['W', 'W', 'D', 'L', 'W'] as ('W' | 'D' | 'L')[],
-    lastPosition: 3
-  },
-  {
-    position: 4,
-    team: { name: 'Chelsea', shortName: 'Chelsea' },
-    played: 15,
-    won: 9,
-    drawn: 4,
-    lost: 2,
-    goalsFor: 28,
-    goalsAgainst: 18,
-    goalDifference: 10,
-    points: 31,
-    form: ['D', 'W', 'W', 'D', 'L'] as ('W' | 'D' | 'L')[],
-    lastPosition: 5
-  },
-  {
-    position: 5,
-    team: { name: 'Newcastle United', shortName: 'Newcastle' },
-    played: 15,
-    won: 8,
-    drawn: 5,
-    lost: 2,
-    goalsFor: 25,
-    goalsAgainst: 20,
-    goalDifference: 5,
-    points: 29,
-    form: ['W', 'D', 'D', 'W', 'L'] as ('W' | 'D' | 'L')[],
-    lastPosition: 4
-  }
-];
-
-const newsArticles = [
-  {
-    id: '1',
-    title: 'Arsenal Maintain Title Challenge with Dominant Victory Over Chelsea',
-    excerpt: 'The Gunners secured a crucial 2-1 victory at the Emirates Stadium to keep pace with the title race leaders.',
-    imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=200&fit=crop',
-    author: 'James Miller',
-    publishedAt: '2024-01-15T14:30:00Z',
-    category: 'Match',
-    readTime: 4,
-    tags: ['Arsenal', 'Chelsea', 'Premier League']
-  },
-  {
-    id: '2',
-    title: 'Manchester City Eye January Transfer Window Reinforcements',
-    excerpt: 'Pep Guardiola\'s side are reportedly looking to strengthen their squad with key signings in the upcoming transfer window.',
-    imageUrl: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=200&fit=crop',
-    author: 'Sarah Johnson',
-    publishedAt: '2024-01-15T10:15:00Z',
-    category: 'Transfer',
-    readTime: 3,
-    tags: ['Manchester City', 'Transfers', 'January Window']
-  },
-  {
-    id: '3',
-    title: 'Liverpool\'s Injury Crisis: How It Affects Their Title Hopes',
-    excerpt: 'An in-depth analysis of Liverpool\'s current injury situation and its impact on their championship aspirations.',
-    author: 'David Wilson',
-    publishedAt: '2024-01-14T16:45:00Z',
-    category: 'Analysis',
-    readTime: 6,
-    tags: ['Liverpool', 'Injuries', 'Title Race']
-  }
-];
+import RefreshControls from '../components/ui/RefreshControls';
+import { useFootballData, useOnlineStatus } from '../hooks/useFootballData';
 
 export default function HomePage() {
   const { user } = useAuth();
+  
+  // Use real football data
+  const {
+    standings,
+    todaysMatches,
+    autoRefresh,
+    refreshRate,
+    toggleAutoRefresh,
+    updateRefreshRate,
+  } = useFootballData();
+  
+  const isOnline = useOnlineStatus();
+
+  // Debug logs
+  console.log('HomePage Debug:', {
+    standingsData: standings.data,
+    standingsLoading: standings.loading,
+    standingsError: standings.error,
+    autoRefresh,
+    isOnline
+  });
 
   const handleHeroClick = () => {
     // Navigate to fantasy page or sign up
@@ -170,6 +49,42 @@ export default function HomePage() {
     console.log('News clicked:', article.id);
   };
 
+  // Mock news data (this would come from another API)
+  const newsArticles = [
+    {
+      id: '1',
+      title: 'Arsenal Maintain Title Challenge with Dominant Victory Over Chelsea',
+      excerpt: 'The Gunners secured a crucial 2-1 victory at the Emirates Stadium to keep pace with the title race leaders.',
+      imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=200&fit=crop',
+      author: 'James Miller',
+      publishedAt: '2024-01-15T14:30:00Z',
+      category: 'Match',
+      readTime: 4,
+      tags: ['Arsenal', 'Chelsea', 'Premier League']
+    },
+    {
+      id: '2',
+      title: 'Manchester City Eye January Transfer Window Reinforcements',
+      excerpt: 'Pep Guardiola\'s side are reportedly looking to strengthen their squad with key signings in the upcoming transfer window.',
+      imageUrl: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=200&fit=crop',
+      author: 'Sarah Johnson',
+      publishedAt: '2024-01-15T10:15:00Z',
+      category: 'Transfer',
+      readTime: 3,
+      tags: ['Manchester City', 'Transfers', 'January Window']
+    },
+    {
+      id: '3',
+      title: 'Liverpool\'s Injury Crisis: How It Affects Their Title Hopes',
+      excerpt: 'An in-depth analysis of Liverpool\'s current injury situation and its impact on their championship aspirations.',
+      author: 'David Wilson',
+      publishedAt: '2024-01-14T16:45:00Z',
+      category: 'Analysis',
+      readTime: 6,
+      tags: ['Liverpool', 'Injuries', 'Title Race']
+    }
+  ];
+
   return (
     <div className="min-h-screen pt-6">
       {/* Hero Section */}
@@ -186,6 +101,16 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
+        {/* Real-time Data Controls */}
+        <RefreshControls
+          autoRefresh={autoRefresh}
+          refreshRate={refreshRate}
+          onToggleAutoRefresh={toggleAutoRefresh}
+          onUpdateRefreshRate={updateRefreshRate}
+          lastUpdated={standings.lastUpdated}
+          isOnline={isOnline}
+        />
+
         {/* Today's Matches */}
         <section className="mb-16">
           <div className="flex items-center justify-between mb-8">
@@ -202,11 +127,24 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingMatches.map((match, index) => (
-              <div key={match.id} className={`fade-up fade-up-delay-${index + 1}`}>
-                <MatchCard match={match} onClick={handleMatchClick} />
+            {todaysMatches.loading ? (
+              // Loading skeleton for matches
+              [...Array(3)].map((_, index) => (
+                <div key={index} className="card animate-pulse">
+                  <div className="h-20 bg-neutral-700 rounded"></div>
+                </div>
+              ))
+            ) : todaysMatches.data && todaysMatches.data.length > 0 ? (
+              todaysMatches.data.map((match, index) => (
+                <div key={match.id} className={`fade-up fade-up-delay-${index + 1}`}>
+                  <MatchCard match={match} onClick={handleMatchClick} />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-neutral-400">No matches scheduled for today</p>
               </div>
-            ))}
+            )}
           </div>
         </section>
 
@@ -216,7 +154,12 @@ export default function HomePage() {
           {/* Left Column - League Table */}
           <div className="lg:col-span-2">
             <StandingsTable 
-              standings={standings}
+              standings={standings.data || []}
+              loading={standings.loading}
+              error={standings.error}
+              lastUpdated={standings.lastUpdated}
+              onRefresh={standings.refresh}
+              autoRefresh={autoRefresh}
               className="fade-up"
             />
           </div>
@@ -254,194 +197,18 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Fantasy Football Section */}
-        <section className="mt-16 text-center">
-          <div className="card bg-gradient-hero p-8 lg:p-12 fade-up">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-h1 text-white font-bold mb-4">
-                Ready to Build Your Ultimate Team?
-              </h2>
-              <p className="text-body-lg text-neutral-200 mb-8">
-                Join millions of fantasy football managers and compete for glory. Pick your players, 
-                set your formation, and climb the leaderboards.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {user ? (
-                  <>
-                    <Link to="/dashboard" className="btn-primary text-lg px-8 py-4">
-                      Go to Dashboard
-                      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </Link>
-                    <Link to="/players" className="btn-secondary text-lg px-8 py-4">
-                      Browse Players
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/auth/register" className="btn-primary text-lg px-8 py-4">
-                      Start Your Team
-                      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </Link>
-                    <Link to="/auth/login" className="btn-secondary text-lg px-8 py-4">
-                      Sign In
-                    </Link>
-                  </>
-                )}
-              </div>
-              
-              {/* Fantasy Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gradient mb-2">8M+</div>
-                  <div className="text-neutral-300">Fantasy Managers</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gradient mb-2">£100K</div>
-                  <div className="text-neutral-300">Weekly Prizes</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gradient mb-2">Free</div>
-                  <div className="text-neutral-300">To Play</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
-}
-
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 text-white">
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-              Fantasy Cards
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
-              Create, collect, and trade Premier League player cards in the ultimate fantasy experience
-            </p>
-            
-            {user ? (
-              <div className="space-x-4">
-                <Link 
-                  to="/dashboard" 
-                  className="inline-block bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg hover:bg-blue-50 transition duration-300 shadow-lg"
-                >
-                  Go to Dashboard
-                </Link>
-                <Link 
-                  to="/players" 
-                  className="inline-block bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300"
-                >
-                  Browse Players
-                </Link>
-              </div>
-            ) : (
-              <div className="space-x-4">
-                <Link 
-                  to="/auth/register" 
-                  className="inline-block bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg hover:bg-blue-50 transition duration-300 shadow-lg"
-                >
-                  Get Started
-                </Link>
-                <Link 
-                  to="/auth/login" 
-                  className="inline-block bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300"
-                >
-                  Sign In
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 opacity-10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Fantasy Cards?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Experience Premier League fantasy like never before with our comprehensive player management system
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="text-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Player Management</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Create and manage comprehensive player profiles with stats, images, and performance data
-              </p>
-            </div>
-            
-            <div className="text-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Performance Tracking</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Track player performance with real-time stats, points, and value changes throughout the season
-              </p>
-            </div>
-            
-            <div className="text-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Card Collection</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Build your ultimate collection of player cards and manage your fantasy portfolio
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Ready to Start Your Fantasy Journey?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of fantasy managers and create your ultimate Premier League team
-          </p>
-          
+        {/* Call to Action */}
+        <div className="text-center py-16">
           {!user && (
-            <Link 
-              to="/auth/register" 
+            <Link
+              to="/auth/register"
               className="inline-block bg-blue-600 text-white font-semibold px-8 py-4 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg text-lg"
             >
               Start Playing Now
             </Link>
           )}
         </div>
-      </section>
+      </div>
     </div>
   );
 }
