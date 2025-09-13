@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
         display: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        'premier': ['Premier League', 'Inter', 'sans-serif'],
       },
       colors: {
         primary: {

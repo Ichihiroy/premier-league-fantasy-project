@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import LiveTicker from '../components/ui/LiveTicker';
 import MatchCard from '../components/ui/MatchCard';
 import NewsCard from '../components/ui/NewsCard';
+import { bgOrangePurple } from '../assets';
 
 // Mock user data - replace with actual API call
 interface UserStats {
@@ -125,11 +126,21 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen pt-6">
-      {/* Live Ticker */}
-      <LiveTicker />
+    <div 
+      className="min-h-screen"
+      style={{
+        backgroundImage: `url(${bgOrangePurple})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="absolute inset-0 bg-black/30"></div>
+      <div className="relative z-10">
+        {/* Live Ticker */}
+        <LiveTicker />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8 fade-up">
           <h1 className="text-display text-white font-bold">
@@ -267,6 +278,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

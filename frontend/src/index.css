@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Fonts */
+@font-face {
+  font-family: 'Premier League';
+  src: url('./assets/fonts/premier_league.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Design Tokens */
 :root {
   /* Brand Colors - Deep Purple Base */

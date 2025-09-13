@@ -1,9 +1,13 @@
 // Asset imports and exports
-// Add your asset imports here as you add image files
+// Logo exports - using public paths
+export const logoBig = '/assets/images/logo-big.png';
+export const logoCompact = '/assets/images/logo-compact.png';
 
-// Example:
-// export { default as logo } from './images/logo.png';
-// export { default as placeholderAvatar } from './images/placeholder-avatar.png';
+// Background exports - using public paths  
+export const bgBluePurple = '/assets/images/zigzag-blue-purple-background-epl-premier-league-thumbnail-video-print-web-background-free-vector.jpg';
+export const bgOrangePurple = '/assets/images/zigzag-orange-purple-background-epl-premier-league-thumbnail-video-print-web-background-free-vector.jpg';
+export const bgPurple = '/assets/images/zigzag-purple-background-epl-premier-league-thumbnail-video-print-web-background-free-vector.jpg';
 
+// Placeholder exports
 export const PLACEHOLDER_AVATAR = 'https://via.placeholder.com/150';
 export const DEFAULT_PLAYER_IMAGE = 'https://via.placeholder.com/300x200?text=Player';

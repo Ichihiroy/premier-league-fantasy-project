@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { bgPurple } from '../assets';
 
 // Validation schema
 const loginSchema = z.object({
@@ -59,8 +60,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div 
+      className="min-h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${bgPurple})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50"></div>
+      <div className="max-w-md w-full space-y-8 relative z-10">
         <div className="text-center fade-up">
           <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-br from-accent-magenta to-accent-teal shadow-lg">
             <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
