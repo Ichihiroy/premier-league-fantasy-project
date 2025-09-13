@@ -14,7 +14,6 @@ import PlayersPage from './pages/PlayersPage';
 import PlayerDetailPage from './pages/PlayerDetailPage';
 import NewPlayerPage from './pages/NewPlayerPage';
 import CollectionPage from './pages/CollectionPage';
-import FixturesPage from './pages/FixturesPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Protected Route Component
@@ -22,6 +21,16 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Router Configuration
 const router = createBrowserRouter([
+  // Auth pages WITHOUT Layout (no NavBar)
+  {
+    path: "/auth/login",
+    element: <LoginPage />
+  },
+  {
+    path: "/auth/register",
+    element: <RegisterPage />
+  },
+  // Application with Layout and NavBar
   {
     path: "/",
     element: <Layout />,
@@ -30,18 +39,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />
-      },
-      {
-        path: "auth/login",
-        element: <LoginPage />
-      },
-      {
-        path: "auth/register",
-        element: <RegisterPage />
-      },
-      {
-        path: "fixtures",
-        element: <FixturesPage />
       },
       {
         path: "dashboard",

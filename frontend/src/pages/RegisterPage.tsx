@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
-import { bgOrangePurple } from '../assets';
 
 // Validation schema
 const registerSchema = z
@@ -100,13 +99,7 @@ export default function RegisterPage() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center"
-      style={{
-        backgroundImage: `url(${bgOrangePurple})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
+      className="min-h-screen flex items-center justify-center relative"
     >
       <div className="absolute inset-0 bg-black/40"></div>
       <div className="max-w-md w-full space-y-8 relative z-10">
