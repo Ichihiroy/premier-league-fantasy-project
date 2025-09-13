@@ -1,5 +1,6 @@
 import { useAuth } from "../contexts/AuthContext";
 import Hero from "../components/ui/Hero";
+import HomePageBackground from "../components/ui/HomePageBackground";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -14,9 +15,10 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-[calc(100svh-5rem)] flex items-center justify-center">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <HomePageBackground />
       {/* Hero Section */}
-      <div className="w-full px-4">
+      <div className="w-full px-4 z-10">
         <Hero
           title="Premier League Fantasy"
           subtitle="Create your ultimate team and compete with friends in the most exciting fantasy football experience"

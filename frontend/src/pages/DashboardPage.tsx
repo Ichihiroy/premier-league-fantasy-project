@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../contexts/AuthContext";
 import { PlaySquare } from "lucide-react";
+import DashboardPageBackground from "../components/ui/DashboardPageBackground";
 
 interface UserStats {
   totalCards: number;
@@ -72,7 +73,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative overflow-hidden">
+      <DashboardPageBackground />
       <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}

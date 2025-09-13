@@ -8,11 +8,12 @@ export default function NavBar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   // No scroll-based transparency/minimize logic; navbar stays solid
 
-  // Close dropdown when clicking outside
+  // Close dropdown and mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -21,13 +22,31 @@ export default function NavBar() {
       ) {
         setShowDropdown(false);
       }
+      if (
+        showMobileMenu &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowMobileMenu(false);
+      }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [showMobileMenu]);
+
+  // Lock scroll when mobile menu is open
+  useEffect(() => {
+    if (showMobileMenu) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showMobileMenu]);
 
   const handleLogout = async () => {
     try {
@@ -245,8 +264,11 @@ export default function NavBar() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden border-t border-white/10">
-            <div className="px-6 py-4 space-y-2">
+          <div
+            ref={mobileMenuRef}
+            className="md:hidden border-t border-white/10 fixed inset-0 z-[60] bg-[#2e004f]/80 backdrop-blur-sm flex flex-col"
+          >
+            <div className="w-full max-w-5xl mx-auto px-6 py-4 space-y-2">
               <Link
                 to="/"
                 className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
