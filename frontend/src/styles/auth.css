@@ -1,0 +1,14 @@
+/* Auth card: purple/cyan glassy look */
+.card-auth {
+  @apply bg-white/30 rounded-2xl p-8 mx-2 md:mx-0;
+}
+
+/* Auth button: purple/cyan gradient */
+.btn-auth-primary {
+  @apply bg-teal-400 text-white font-bold py-3 px-6 rounded-xl  hover:bg-teal-600 transition-all duration-200;
+}
+
+/* Auth input: glassy, purple border focus */
+.input-auth {
+  @apply bg-white/10 text-white placeholder:text-neutral-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-accent-teal transition-all;
+}

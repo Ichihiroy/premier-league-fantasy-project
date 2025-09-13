@@ -74,12 +74,12 @@ export default function NavBar() {
               <img
                 src={logoCompact}
                 alt="Fantasy League"
-                className="w-8 h-8 group-hover:scale-110 transition-transform duration-200"
+                className="w-20 h-8 group-hover:scale-110 transition-transform duration-200"
               />
             </div>
             <div className="hidden sm:block">
-              <span className="text-lg font-bold text-white font-premier">
-                Fantasy League
+              <span className="text-sm text-white font-premier mr-6">
+                Fantasy
               </span>
             </div>
           </Link>
@@ -168,7 +168,7 @@ export default function NavBar() {
                 </button>
 
                 {showDropdown && (
-                  <div className="absolute right-0 mt-4 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-4 w-48 bg-white border !font-semibold border-gray-200 rounded-lg shadow-lg py-1 z-50">
                     <div className="px-3 py-2 border-b border-gray-100">
                       <div className="text-gray-800 font-medium text-sm">
                         {user.name}
@@ -177,7 +177,7 @@ export default function NavBar() {
                     </div>
                     <Link
                       to="/dashboard"
-                      className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm"
+                      className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-purple-600 hover:bg-blue-50 transition-colors text-sm"
                       onClick={() => setShowDropdown(false)}
                     >
                       <svg
@@ -227,7 +227,7 @@ export default function NavBar() {
                 </Link>
                 <Link
                   to="/auth/register"
-                  className="bg-white text-purple-800 px-3 py-1.5 rounded-lg font-medium hover:bg-purple-100 transition-all duration-200 text-sm"
+                  className="bg-white text-purple-800 px-3 py-1.5 rounded-full font-medium hover:bg-purple-100 transition-all duration-200 text-sm"
                 >
                   Sign Up
                 </Link>
@@ -273,7 +273,7 @@ export default function NavBar() {
                 to="/"
                 className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                   isActive("/")
-                    ? "bg-gradient-to-r from-accent-magenta to-accent-teal text-white"
+                    ? " text-white"
                     : "text-neutral-300 hover:text-white hover:bg-white/10"
                 }`}
                 onClick={() => setShowMobileMenu(false)}
@@ -339,7 +339,7 @@ export default function NavBar() {
                   </Link>
                   <Link
                     to="/auth/register"
-                    className="block px-4 py-3 bg-gradient-to-r from-accent-magenta to-accent-teal text-white rounded-lg font-medium text-center"
+                    className="block px-4 py-3 hover:text-white rounded-lg hover:bg-white/10 text-neutral-300 font-medium"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     Sign Up

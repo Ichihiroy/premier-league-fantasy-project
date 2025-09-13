@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../contexts/AuthContext";
+import AuthPageBackground from "../components/ui/AuthPageBackground";
+import "../styles/auth.css";
 // No page-specific background images; rely on global gradient
 
 // Validation schema
@@ -65,25 +67,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative">
-      <div className="absolute inset-0 bg-black/50"></div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <AuthPageBackground />
+      <div className="absolute inset-0 bg-black/50 z-0"></div>
       <div className="max-w-md w-full space-y-8 relative z-10">
         <div className="text-center fade-up">
-          <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-br from-accent-magenta to-accent-teal shadow-lg">
-            <svg
-              className="h-10 w-10 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </div>
           <h2 className="mt-6 text-display text-white font-bold">
             Welcome back
           </h2>
@@ -101,7 +89,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="card fade-up fade-up-delay-1">
+        <div className="card-auth fade-up fade-up-delay-1">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
@@ -115,7 +103,7 @@ export default function LoginPage() {
                   {...register("email")}
                   type="email"
                   autoComplete="email"
-                  className={`input-field w-full ${
+                  className={`input-auth w-full ${
                     errors.email ? "border-red-500" : ""
                   }`}
                   placeholder="Enter your email"
@@ -155,7 +143,7 @@ export default function LoginPage() {
                   {...register("password")}
                   type="password"
                   autoComplete="current-password"
-                  className={`input-field w-full ${
+                  className={`input-auth w-full ${
                     errors.password ? "border-red-500" : ""
                   }`}
                   placeholder="Enter your password"
@@ -187,7 +175,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full py-3 text-lg font-semibold"
+                className="btn-auth-primary w-full py-3 text-lg font-semibold"
               >
                 {loading ? (
                   <>
