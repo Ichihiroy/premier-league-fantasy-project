@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { Search } from "lucide-react";
 
 interface Player {
   id: string;
@@ -190,19 +191,10 @@ export default function PlayersPage() {
                   placeholder="Search by name..."
                   className="input-field w-full pl-10"
                 />
-                <svg
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                <Search
+                  size={5}
+                  className="absolute left-3 top-5 transform -translate-y-1/2 w-4 h-4 text-neutral-400"
+                />
               </div>
             </div>
 
@@ -266,11 +258,11 @@ export default function PlayersPage() {
               }`}
               onClick={() => navigate(`/players/${player.id}`)}
             >
-              {player.image_url ? (
+              {player.imageUrl ? (
                 <img
-                  src={player.image_url}
+                  src={player.imageUrl}
                   alt={player.name}
-                  className="w-full h-48 object-cover rounded-t-xl"
+                  className="w-full h-auto object-cover rounded-t-xl"
                 />
               ) : (
                 <div className="w-full h-48 bg-gradient-to-br from-neutral-700 to-neutral-800 rounded-t-xl flex items-center justify-center">
@@ -308,12 +300,6 @@ export default function PlayersPage() {
                     <span className="text-sm text-neutral-400">Price</span>
                     <span className="text-sm font-medium text-accent-lime">
                       £{player.price}m
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-neutral-400">Points</span>
-                    <span className="text-sm font-bold text-gradient">
-                      {player.points}
                     </span>
                   </div>
                 </div>

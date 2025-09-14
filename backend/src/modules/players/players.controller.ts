@@ -8,7 +8,15 @@ export const getAllPlayers = async (
 ) => {
   try {
     const players = await playerService.getAllPlayers();
-    res.json(players);
+    res.json({
+      data: players,
+      meta: {
+        page: 1,
+        per_page: players.length,
+        total: players.length,
+        total_pages: 1,
+      },
+    });
   } catch (err) {
     next(err);
   }
