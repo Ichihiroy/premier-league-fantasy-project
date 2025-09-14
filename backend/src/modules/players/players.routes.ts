@@ -1,10 +1,9 @@
 import { Router } from "express";
+import * as playersController from "./players.controller";
 
 const router = Router();
 
-// Placeholder routes - will implement later
-router.get("/", (_req, res) => {
-  res.json({ message: "Players module - Coming soon!" });
-});
+// GET /api/players
+router.get("/", playersController.getAllPlayers);
 
 export default router;

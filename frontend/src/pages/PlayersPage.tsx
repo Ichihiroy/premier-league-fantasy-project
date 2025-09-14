@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 interface Player {
   id: string;
@@ -33,10 +33,10 @@ export default function PlayersPage() {
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const navigate = useNavigate();
 
-  const currentPage = parseInt(searchParams.get('page') || '1');
-  const searchTerm = searchParams.get('search') || '';
-  const positionFilter = searchParams.get('position') || '';
-  const teamFilter = searchParams.get('team') || '';
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const searchTerm = searchParams.get("search") || "";
+  const positionFilter = searchParams.get("position") || "";
+  const teamFilter = searchParams.get("team") || "";
 
   useEffect(() => {
     fetchPlayers();
@@ -45,24 +45,30 @@ export default function PlayersPage() {
   const fetchPlayers = async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      if (currentPage > 1) params.set('page', currentPage.toString());
-      if (searchTerm) params.set('search', searchTerm);
-      if (positionFilter) params.set('position', positionFilter);
-      if (teamFilter) params.set('team', teamFilter);
 
-      const response = await fetch(`http://localhost:4000/api/players?${params}`);
-      
+      const params = new URLSearchParams();
+      if (searchTerm) params.set("search", searchTerm);
+      if (positionFilter) params.set("position", positionFilter);
+      if (teamFilter) params.set("team", teamFilter);
+      if (searchTerm || positionFilter || teamFilter || currentPage > 1) {
+        if (currentPage > 1) params.set("page", currentPage.toString());
+      }
+
+      const url = params.toString()
+        ? `http://localhost:4000/api/players?${params}`
+        : `http://localhost:4000/api/players`;
+      const response = await fetch(url);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch players');
+        throw new Error("Failed to fetch players");
       }
 
       const data: PlayersResponse = await response.json();
       setPlayers(data.data);
       setMeta(data.meta);
     } catch (error) {
-      console.error('Error fetching players:', error);
-      toast.error('Failed to load players');
+      console.error("Error fetching players:", error);
+      toast.error("Failed to load players");
     } finally {
       setLoading(false);
     }
@@ -71,37 +77,56 @@ export default function PlayersPage() {
   const handleSearch = (value: string) => {
     const newParams = new URLSearchParams(searchParams);
     if (value) {
-      newParams.set('search', value);
+      newParams.set("search", value);
     } else {
-      newParams.delete('search');
+      newParams.delete("search");
     }
-    newParams.delete('page'); // Reset to first page
+    newParams.delete("page"); // Reset to first page
     setSearchParams(newParams);
   };
 
-  const handleFilterChange = (filterType: 'position' | 'team', value: string) => {
+  const handleFilterChange = (
+    filterType: "position" | "team",
+    value: string
+  ) => {
     const newParams = new URLSearchParams(searchParams);
     if (value) {
       newParams.set(filterType, value);
     } else {
       newParams.delete(filterType);
     }
-    newParams.delete('page'); // Reset to first page
+    newParams.delete("page"); // Reset to first page
     setSearchParams(newParams);
   };
 
   const handlePageChange = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', page.toString());
+    newParams.set("page", page.toString());
     setSearchParams(newParams);
   };
 
-  const positions = ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'];
+  const positions = ["Goalkeeper", "Defender", "Midfielder", "Forward"];
   const teams = [
-    'Arsenal', 'Aston Villa', 'Brighton', 'Burnley', 'Chelsea', 'Crystal Palace',
-    'Everton', 'Fulham', 'Liverpool', 'Luton Town', 'Manchester City', 
-    'Manchester United', 'Newcastle United', 'Nottingham Forest', 'Sheffield United',
-    'Tottenham', 'West Ham', 'Wolves', 'Bournemouth', 'Brentford'
+    "Arsenal",
+    "Aston Villa",
+    "Brighton",
+    "Burnley",
+    "Chelsea",
+    "Crystal Palace",
+    "Everton",
+    "Fulham",
+    "Liverpool",
+    "Luton Town",
+    "Manchester City",
+    "Manchester United",
+    "Newcastle United",
+    "Nottingham Forest",
+    "Sheffield United",
+    "Tottenham",
+    "West Ham",
+    "Wolves",
+    "Bournemouth",
+    "Brentford",
   ];
 
   if (loading) {
@@ -121,7 +146,9 @@ export default function PlayersPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8 fade-up">
           <div>
-            <h1 className="text-display text-white font-bold">Player Database</h1>
+            <h1 className="text-display text-white font-bold">
+              Player Database
+            </h1>
             <p className="text-body-lg text-neutral-300 mt-2">
               Discover and analyze Premier League talent
             </p>
@@ -130,8 +157,18 @@ export default function PlayersPage() {
             to="/players/new"
             className="btn-primary flex items-center space-x-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
             </svg>
             <span>Add Player</span>
           </Link>
@@ -153,8 +190,18 @@ export default function PlayersPage() {
                   placeholder="Search by name..."
                   className="input-field w-full pl-10"
                 />
-                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
             </div>
@@ -166,7 +213,7 @@ export default function PlayersPage() {
               </label>
               <select
                 value={positionFilter}
-                onChange={(e) => handleFilterChange('position', e.target.value)}
+                onChange={(e) => handleFilterChange("position", e.target.value)}
                 className="input-field w-full"
               >
                 <option value="">All Positions</option>
@@ -185,7 +232,7 @@ export default function PlayersPage() {
               </label>
               <select
                 value={teamFilter}
-                onChange={(e) => handleFilterChange('team', e.target.value)}
+                onChange={(e) => handleFilterChange("team", e.target.value)}
                 className="input-field w-full"
               >
                 <option value="">All Teams</option>
@@ -211,10 +258,12 @@ export default function PlayersPage() {
 
         {/* Players Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-          {players.map((player, index) => (
+          {players?.map((player, index) => (
             <div
               key={player.id}
-              className={`card card-hover cursor-pointer fade-up fade-up-delay-${(index % 4) + 1}`}
+              className={`card card-hover cursor-pointer fade-up fade-up-delay-${
+                (index % 4) + 1
+              }`}
               onClick={() => navigate(`/players/${player.id}`)}
             >
               {player.image_url ? (
@@ -225,8 +274,18 @@ export default function PlayersPage() {
                 />
               ) : (
                 <div className="w-full h-48 bg-gradient-to-br from-neutral-700 to-neutral-800 rounded-t-xl flex items-center justify-center">
-                  <svg className="w-16 h-16 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <svg
+                    className="w-16 h-16 text-neutral-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                 </div>
               )}
@@ -243,9 +302,7 @@ export default function PlayersPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-neutral-400">Team</span>
-                    <span className="text-sm text-white">
-                      {player.team}
-                    </span>
+                    <span className="text-sm text-white">{player.team}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-neutral-400">Price</span>
@@ -266,10 +323,15 @@ export default function PlayersPage() {
         </div>
 
         {/* Empty State */}
-        {players.length === 0 && (
+        {players?.length === 0 && (
           <div className="text-center py-16 fade-up">
             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-accent-magenta to-accent-teal flex items-center justify-center">
-              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-12 h-12 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -283,15 +345,25 @@ export default function PlayersPage() {
             </h3>
             <p className="text-neutral-300 mb-6 max-w-md mx-auto">
               {searchTerm || positionFilter || teamFilter
-                ? 'Try adjusting your search criteria or filters to find more players'
-                : 'Build your database by adding your first player to get started'}
+                ? "Try adjusting your search criteria or filters to find more players"
+                : "Build your database by adding your first player to get started"}
             </p>
             <Link
               to="/players/new"
               className="btn-primary inline-flex items-center space-x-2"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
               </svg>
               <span>Add First Player</span>
             </Link>
@@ -307,47 +379,71 @@ export default function PlayersPage() {
                 disabled={currentPage === 1}
                 className="btn-secondary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
                 Previous
               </button>
-              
+
               <div className="flex space-x-1">
-                {Array.from({ length: Math.min(meta.total_pages, 5) }, (_, i) => {
-                  const page = i + 1;
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => handlePageChange(page)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        page === currentPage
-                          ? 'bg-gradient-to-r from-accent-magenta to-accent-teal text-white'
-                          : 'text-neutral-300 hover:text-white hover:bg-neutral-700'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
+                {Array.from(
+                  { length: Math.min(meta.total_pages, 5) },
+                  (_, i) => {
+                    const page = i + 1;
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          page === currentPage
+                            ? "bg-gradient-to-r from-accent-magenta to-accent-teal text-white"
+                            : "text-neutral-300 hover:text-white hover:bg-neutral-700"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  }
+                )}
               </div>
-              
+
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === meta.total_pages}
                 className="btn-secondary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-4 h-4 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </div>
 
             {/* Results Info */}
             <div className="text-center mt-4 text-sm text-neutral-400">
-              Showing {((currentPage - 1) * meta.per_page) + 1} to{' '}
-              {Math.min(currentPage * meta.per_page, meta.total)} of {meta.total} players
+              Showing {(currentPage - 1) * meta.per_page + 1} to{" "}
+              {Math.min(currentPage * meta.per_page, meta.total)} of{" "}
+              {meta.total} players
             </div>
           </div>
         )}
