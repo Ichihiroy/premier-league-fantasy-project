@@ -206,11 +206,15 @@ export default function PlayersPage() {
               <select
                 value={positionFilter}
                 onChange={(e) => handleFilterChange("position", e.target.value)}
-                className="input-field w-full"
+                className="input-field w-full text-white focus:ring-cyan-400 border-purple-700"
               >
                 <option value="">All Positions</option>
                 {positions.map((position) => (
-                  <option key={position} value={position}>
+                  <option
+                    key={position}
+                    value={position}
+                    className="bg-[#2e004f]"
+                  >
                     {position}
                   </option>
                 ))}
@@ -225,11 +229,15 @@ export default function PlayersPage() {
               <select
                 value={teamFilter}
                 onChange={(e) => handleFilterChange("team", e.target.value)}
-                className="input-field w-full"
+                className="input-field w-full text-white focus:ring-cyan-400 border-purple-700 "
               >
                 <option value="">All Teams</option>
                 {teams.map((team) => (
-                  <option key={team} value={team}>
+                  <option
+                    key={team}
+                    value={team}
+                    className="bg-[#2e004f] text-white focus:ring-cyan-400 border-purple-700"
+                  >
                     {team}
                   </option>
                 ))}

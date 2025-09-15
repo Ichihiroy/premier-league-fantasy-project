@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import * as playerService from "./players.service";
+import { playersService } from "./players.service";
 
 export const getAllPlayers = async (
   _req: Request,
@@ -7,7 +7,7 @@ export const getAllPlayers = async (
   next: NextFunction
 ) => {
   try {
-    const players = await playerService.getAllPlayers();
+    const players = await playersService.getAllPlayers();
     res.json({
       data: players,
       meta: {
@@ -19,5 +19,28 @@ export const getAllPlayers = async (
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const getPlayerById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = String(req.params.id);
+
+    const player = await playersService.getPlayerById(id);
+
+    if (!player) {
+      res.status(404).json({ message: "Player not found" });
+      return;
+    }
+
+    res.status(200).json(player);
+    return;
+  } catch (err) {
+    next(err);
+    return;
   }
 };
