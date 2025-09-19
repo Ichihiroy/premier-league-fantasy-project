@@ -28,7 +28,7 @@ export const getPlayerById = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = String(req.params.id);
+    const id = String(req.params.playerId);
 
     const player = await playersService.getPlayerById(id);
 
