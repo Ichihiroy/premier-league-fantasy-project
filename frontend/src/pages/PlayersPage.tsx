@@ -9,10 +9,9 @@ interface Player {
   position: string;
   team: string;
   price: number;
-  points: number;
-  image_url?: string;
-  created_at: string;
-  updated_at: string;
+  imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface PaginationMeta {
@@ -66,6 +65,7 @@ export default function PlayersPage() {
 
       const data: PlayersResponse = await response.json();
       setPlayers(data.data);
+      console.log("player", players);
       setMeta(data.meta);
     } catch (error) {
       console.error("Error fetching players:", error);
@@ -154,7 +154,7 @@ export default function PlayersPage() {
               Discover and analyze Premier League talent
             </p>
           </div>
-          <Link
+          {/* <Link
             to="/players/new"
             className="btn-primary flex items-center space-x-2"
           >
@@ -172,7 +172,7 @@ export default function PlayersPage() {
               />
             </svg>
             <span>Add Player</span>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Filters */}

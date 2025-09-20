@@ -18,6 +18,7 @@ export interface AuthResponse {
     id: string;
     name: string;
     email: string;
+    balance?: number | null;
     createdAt: Date;
   };
   token: string;
@@ -55,6 +56,7 @@ export class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        balance: user.balance,
         createdAt: user.createdAt,
       },
       token,
@@ -86,6 +88,7 @@ export class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        balance: user.balance,
         createdAt: user.createdAt,
       },
       token,
@@ -99,6 +102,7 @@ export class AuthService {
         id: true,
         name: true,
         email: true,
+        balance: true,
         createdAt: true,
         updatedAt: true,
         _count: {

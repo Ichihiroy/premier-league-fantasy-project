@@ -131,7 +131,7 @@ export default function PlayerDetailPage() {
                 <img
                   src={player.imageUrl}
                   alt={player.name}
-                  className="w-full object-cover md:w-64 bg-purple-900 m-8 rounded-xl pt-4 border-purple-800 border"
+                  className="w-full object-cover md:w-64 md:bg-purple-900 md:m-8 rounded-xl pt-4 md:border-purple-800 md:border"
                 />
               ) : (
                 <div className="h-64 w-full md:w-64 bg-purple-900 flex items-center justify-center">
@@ -170,7 +170,7 @@ export default function PlayerDetailPage() {
                     £{player.price}m
                   </div>
                   <div className="text-lg text-purple-200">
-                    {player.points} points
+                    {player?.stats?.points} points
                   </div>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function PlayerDetailPage() {
                     Total Points
                   </div>
                   <div className="text-lg font-semibold text-white">
-                    {player.points}
+                    {player?.stats?.points}
                   </div>
                 </div>
                 {/* Dynamic Stats */}

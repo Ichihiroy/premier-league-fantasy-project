@@ -47,6 +47,8 @@ export default function DashboardPage() {
         toast.success(`Welcome back, ${user?.name}!`, {
           icon: "👋",
         });
+
+        console.log(user);
       } catch (error) {
         console.error("❌ Failed to fetch user stats:", error);
         toast.error("Failed to load dashboard data");
@@ -84,6 +86,17 @@ export default function DashboardPage() {
             </h1>
             <p className="text-body-lg text-neutral-300 mt-2">
               Here's your fantasy football overview and latest updates
+            </p>
+            <p>
+              {user?.balance !== undefined && user?.balance !== null && (
+                <span className="text-sm text-neutral-400">
+                  Account Balance:{" "}
+                  {user.balance.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
+                </span>
+              )}
             </p>
           </div>
 
