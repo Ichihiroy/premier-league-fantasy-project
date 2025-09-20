@@ -8,13 +8,15 @@ export interface User {
 export interface Player {
   id: string;
   name: string;
-  position: 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward';
+  position: "Goalkeeper" | "Defender" | "Midfielder" | "Forward";
   team: string;
   price: number;
   points: number;
-  image_url?: string;
-  created_at: string;
-  updated_at: string;
+  imageUrl?: string;
+  description?: string;
+  stats?: Record<string, number>;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthContextType {
@@ -41,7 +43,7 @@ export interface ApiResponse<T> {
 export interface CollectionItem {
   id: string;
   name: string;
-  type: 'image' | 'document' | 'other';
+  type: "image" | "document" | "other";
   size: number;
   url: string;
   thumbnail_url?: string;
