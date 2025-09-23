@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
+import { useAuth } from "../contexts/AuthContext";
+import apiClient from "../services/http";
 import { Player } from "../types";
 
 export default function PlayerDetailPage() {
@@ -10,6 +12,29 @@ export default function PlayerDetailPage() {
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [buying, setBuying] = useState(false);
+  const { user, loading: authLoading } = useAuth();
+  // Buy player handler
+  const handleBuy = async () => {
+    if (!user || !player) return;
+    setBuying(true);
+    try {
+      await apiClient.post("/collection/buy", {
+        userId: user.id,
+        playerId: player.id,
+      });
+      toast.success("Player purchased and added to your collection!");
+      // Update user balance in context (force reload or refetch user)
+      // For now, just update locally:
+      player.price &&
+        user.balance !== undefined &&
+        (user.balance -= player.price);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to buy player");
+    } finally {
+      setBuying(false);
+    }
+  };
 
   useEffect(() => {
     if (playerId) {
@@ -154,6 +179,8 @@ export default function PlayerDetailPage() {
 
             {/* Player Details */}
             <div className="p-8 flex-1">
+              {/* Buy Button */}
+
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h1 className="text-3xl font-bold text-white mb-2">
@@ -177,14 +204,26 @@ export default function PlayerDetailPage() {
 
               {/* Description */}
               {player.description && (
-                <div className="mb-8">
+                <div className="mb-2">
                   <div className="text-purple-300 text-sm mb-1 font-semibold">
                     Description
                   </div>
-                  <div className="] rounded-lg py-4 text-white text-base font-semibold">
+                  <div className="rounded-lg py-4 text-white text-base font-semibold">
                     {player.description}
                   </div>
                 </div>
+              )}
+
+              {user && (
+                <button
+                  className="mb-4 px-4 py-2 rounded-full text-white font-bold shadow-lg bg-green-600 hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed w-full"
+                  disabled={
+                    buying || authLoading || (user.balance ?? 0) < player.price
+                  }
+                  onClick={handleBuy}
+                >
+                  {buying ? "Processing..." : `Buy for £${player.price}m`}
+                </button>
               )}
 
               {/* Stats Grid */}
