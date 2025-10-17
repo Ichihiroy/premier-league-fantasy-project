@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
+import { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 interface CollectionItem {
   id: string;
   name: string;
-  type: 'image' | 'document' | 'other';
+  type: "image" | "document" | "other";
   size: number;
   url: string;
   thumbnail_url?: string;
@@ -35,19 +35,19 @@ export default function CollectionPage() {
   const fetchCollection = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:4000/api/collection', {
-        credentials: 'include',
+      const response = await fetch("http://localhost:4000/api/collection", {
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch collection');
+        throw new Error("Failed to fetch collection");
       }
 
       const data: CollectionResponse = await response.json();
       setItems(data.data);
     } catch (error) {
-      console.error('Error fetching collection:', error);
-      toast.error('Failed to load collection');
+      console.error("Error fetching collection:", error);
+      toast.error("Failed to load collection");
     } finally {
       setLoading(false);
     }
@@ -63,57 +63,60 @@ export default function CollectionPage() {
     try {
       setUploading(true);
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append("file", selectedFile);
 
-      const response = await fetch('http://localhost:4000/api/files/upload', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("http://localhost:4000/api/files/upload", {
+        method: "POST",
+        credentials: "include",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        throw new Error("Upload failed");
       }
 
       await response.json();
-      toast.success('File uploaded successfully!');
+      toast.success("File uploaded successfully!");
       setSelectedFile(null);
       fetchCollection(); // Refresh the collection
     } catch (error) {
-      console.error('Error uploading file:', error);
-      toast.error('Failed to upload file');
+      console.error("Error uploading file:", error);
+      toast.error("Failed to upload file");
     } finally {
       setUploading(false);
     }
   };
 
   const handleDelete = async (itemId: string) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!confirm("Are you sure you want to delete this item?")) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/api/files/${itemId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:4000/api/files/${itemId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to delete item');
+        throw new Error("Failed to delete item");
       }
 
-      toast.success('Item deleted successfully');
+      toast.success("Item deleted successfully");
       fetchCollection(); // Refresh the collection
     } catch (error) {
-      console.error('Error deleting item:', error);
-      toast.error('Failed to delete item');
+      console.error("Error deleting item:", error);
+      toast.error("Failed to delete item");
     }
   };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
@@ -129,31 +132,55 @@ export default function CollectionPage() {
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case 'image':
+      case "image":
         return (
-          <svg className="w-12 h-12 text-accent-lime" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+          <svg
+            className="w-12 h-12 text-accent-lime"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+              clipRule="evenodd"
+            />
           </svg>
         );
-      case 'document':
+      case "document":
         return (
-          <svg className="w-12 h-12 text-accent-teal" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+          <svg
+            className="w-12 h-12 text-accent-teal"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+              clipRule="evenodd"
+            />
           </svg>
         );
       default:
         return (
-          <svg className="w-12 h-12 text-accent-magenta" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+          <svg
+            className="w-12 h-12 text-accent-magenta"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+              clipRule="evenodd"
+            />
           </svg>
         );
     }
@@ -184,13 +211,13 @@ export default function CollectionPage() {
         {/* Upload Section */}
         <div className="card mb-8 fade-up fade-up-delay-1">
           <h2 className="text-h3 text-white font-bold mb-6">Upload Files</h2>
-          
+
           {/* Drag and Drop Area */}
           <div
             className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
               dragActive
-                ? 'border-accent-teal bg-accent-teal/10 scale-105'
-                : 'border-neutral-600 hover:border-neutral-500'
+                ? "border-accent-teal bg-accent-teal/10 scale-105"
+                : "border-neutral-600 hover:border-neutral-500"
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -200,10 +227,14 @@ export default function CollectionPage() {
             {selectedFile ? (
               <div className="space-y-6">
                 <div className="flex items-center justify-center space-x-3">
-                  {getFileIcon('other')}
+                  {getFileIcon("other")}
                   <div className="text-left">
-                    <div className="text-white font-semibold">{selectedFile.name}</div>
-                    <div className="text-neutral-400 text-sm">({formatFileSize(selectedFile.size)})</div>
+                    <div className="text-white font-semibold">
+                      {selectedFile.name}
+                    </div>
+                    <div className="text-neutral-400 text-sm">
+                      ({formatFileSize(selectedFile.size)})
+                    </div>
                   </div>
                 </div>
                 <div className="flex justify-center space-x-4">
@@ -214,14 +245,29 @@ export default function CollectionPage() {
                   >
                     {uploading ? (
                       <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
                         </svg>
                         Uploading...
                       </>
                     ) : (
-                      'Upload File'
+                      "Upload File"
                     )}
                   </button>
                   <button
@@ -250,14 +296,19 @@ export default function CollectionPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white text-lg mb-2">Drag and drop your files here</p>
+                  <p className="text-white text-lg mb-2">
+                    Drag and drop your files here
+                  </p>
                   <p className="text-neutral-400 mb-4">or</p>
                   <label className="btn-primary cursor-pointer">
                     Choose Files
                     <input
                       type="file"
                       className="hidden"
-                      onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
+                      onChange={(e) =>
+                        e.target.files?.[0] &&
+                        handleFileSelect(e.target.files[0])
+                      }
                       multiple={false}
                     />
                   </label>
@@ -271,13 +322,18 @@ export default function CollectionPage() {
         </div>
 
         {/* Collection Grid */}
-        {items.length > 0 ? (
+        {items?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {items.map((item, index) => (
-              <div key={item.id} className={`card card-hover fade-up fade-up-delay-${(index % 4) + 1}`}>
+              <div
+                key={item.id}
+                className={`card card-hover fade-up fade-up-delay-${
+                  (index % 4) + 1
+                }`}
+              >
                 {/* Preview */}
                 <div className="h-48 bg-gradient-to-br from-neutral-700 to-neutral-800 rounded-t-xl flex items-center justify-center">
-                  {item.type === 'image' && item.thumbnail_url ? (
+                  {item.type === "image" && item.thumbnail_url ? (
                     <img
                       src={item.thumbnail_url}
                       alt={item.name}
@@ -350,11 +406,14 @@ export default function CollectionPage() {
               Your collection is empty
             </h3>
             <p className="text-neutral-300 mb-6 max-w-md mx-auto">
-              Upload your first files to start building your fantasy football collection
+              Upload your first files to start building your fantasy football
+              collection
             </p>
             <div className="inline-block bg-gradient-to-r from-accent-magenta to-accent-teal p-px rounded-lg">
               <div className="bg-neutral-900 rounded-lg px-6 py-3 hover:bg-transparent transition-colors duration-300 cursor-pointer">
-                <span className="text-gradient font-semibold">Start uploading files</span>
+                <span className="text-gradient font-semibold">
+                  Start uploading files
+                </span>
               </div>
             </div>
           </div>
